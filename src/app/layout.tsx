@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     apple: '/favicon.png',
   },
   openGraph: {
-    title: "GetLockedIN - 2025 Protocol",
+    title: "GetLockedIN - 2026 Protocol",
     description: "Don't just set resolutions. Go to war for them. The ultimate accountability protocol.",
     url: 'https://getlockedin.live',
     siteName: 'GetLockedIN',
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "GetLockedIN - 2025 Protocol",
+    title: "GetLockedIN - 2026 Protocol",
     description: "Don't just set resolutions. Go to war for them.",
     creator: '@GetLockedIN',
   },

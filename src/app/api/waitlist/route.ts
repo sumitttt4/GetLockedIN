@@ -19,14 +19,14 @@ export async function POST(request: Request) {
 
         // Send confirmation email
         const { data, error } = await resend.emails.send({
-            from: 'LockedIn <onboarding@resend.dev>', // Use resend.dev for testing unless domain is verified
+            from: 'GetLockedIN <hello@getlockedin.live>',
             to: email,
             subject: 'You are on the list! 🚀',
             html: `
                 <div style="font-family: sans-serif; color: #333;">
                     <h1>You're LockedIn.</h1>
                     <p>Thanks for joining the waitlist for LockedIn.</p>
-                    <p>We are launching on <strong>December 31st, 2025</strong>.</p>
+                    <p>We are launching on <strong>January 1st, 2026</strong>.</p>
                     <p>We'll notify you when spots open up for the Early Bird plan ($5).</p>
                     <br/>
                     <p>Stay hard,</p>

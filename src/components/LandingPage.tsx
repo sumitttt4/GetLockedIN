@@ -157,7 +157,7 @@ export default function LandingPage() {
                                                     size="sm"
                                                     variant="outline"
                                                     className="h-7 text-xs border-green-200 text-green-700 hover:bg-green-50 hover:text-green-800 bg-white"
-                                                    onClick={() => window.open(`https://twitter.com/intent/tweet?text=I%20just%20joined%20the%20war%20against%20mediocrity.%20%0A%0ASecure%20your%20spot%20on%20the%20GetLockedIN%20protocol%20before%202025.%20%F0%9F%94%92%20%0A%0Ahttps%3A%2F%2Fgetlockedin.live`, '_blank')}
+                                                    onClick={() => window.open(`https://twitter.com/intent/tweet?text=I%20just%20joined%20the%20war%20against%20mediocrity.%20%0A%0ASecure%20your%20spot%20on%20the%20GetLockedIN%20protocol%20for%202026.%20%F0%9F%94%92%20%0A%0Ahttps%3A%2F%2Fgetlockedin.live`, '_blank')}
                                                 >
                                                     Share on X
                                                 </Button>
@@ -259,7 +259,7 @@ export default function LandingPage() {
                         <div className="max-w-4xl mx-auto px-6 text-center">
                             <div className="space-y-6">
                                 <h2 className="text-3xl md:text-5xl font-bold text-zinc-900">
-                                    Ready to make 2025 different?
+                                    Ready to make 2026 different?
                                     <br />
                                     <span className="text-green-600">Join the waitlist.</span>
                                 </h2>
@@ -293,7 +293,7 @@ export default function LandingPage() {
                                 </div>
 
                                 <p className="text-sm text-zinc-400">
-                                    © 2025 GetLockedIN. Consistency is the only currency.
+                                    © 2026 GetLockedIN. Consistency is the only currency.
                                 </p>
                             </div>
                         </div>

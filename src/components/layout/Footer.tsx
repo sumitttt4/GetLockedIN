@@ -31,7 +31,7 @@ export function Footer() {
                     </Button>
 
                     <div className="flex items-center gap-6 text-sm text-zinc-500">
-                        <span>© 2025 DayZero.</span>
+                        <span>© 2026 DayZero.</span>
                     </div>
                 </div>
 
