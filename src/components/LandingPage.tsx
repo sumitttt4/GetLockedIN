@@ -165,6 +165,26 @@ export default function LandingPage() {
                                         </motion.div>
                                     )}
 
+                                    {/* Pay Now CTA - Shows after waitlist signup */}
+                                    {submitted && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: 0.3 }}
+                                            className="mt-4 p-4 bg-gradient-to-r from-zinc-900 to-zinc-800 rounded-xl text-center shadow-lg"
+                                        >
+                                            <p className="text-white text-sm mb-2">
+                                                🔥 <span className="font-bold">Skip the wait!</span> Join the GetLockedIN culture now
+                                            </p>
+                                            <Button
+                                                onClick={() => window.location.href = 'https://checkout.dodopayments.com/buy/pdt_0NUvc8v3ozWTrnPigc0ka?quantity=1&redirect_url=https://getlockedin.live/checkout/success'}
+                                                className="bg-green-500 hover:bg-green-600 text-white font-bold px-6 h-9 rounded-full shadow-lg shadow-green-500/20"
+                                            >
+                                                Pay $5 → Get Instant Access
+                                            </Button>
+                                        </motion.div>
+                                    )}
+
                                     <p className="text-sm text-zinc-400">
                                         <span className="text-green-600 font-semibold">$5 early bird</span> · Limited spots · Lifetime access
                                     </p>

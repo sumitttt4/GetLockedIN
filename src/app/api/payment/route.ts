@@ -40,7 +40,7 @@ export async function POST(request: Request) {
                 quantity: 1,
                 amount: amount
             }],
-            return_url: `${process.env.NEXT_PUBLIC_APP_URL}/success`,
+            return_url: "https://getlockedin.live/checkout/success",
         });
 
         return NextResponse.json({ url: payment.payment_link });

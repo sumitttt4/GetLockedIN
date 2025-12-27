@@ -9,34 +9,12 @@ interface BuyButtonProps {
 }
 
 export function BuyButton({ productId, children, className }: BuyButtonProps) {
+    const checkoutUrl = `https://checkout.dodopayments.com/buy/${productId}?quantity=1&redirect_url=https://getlockedin.live/checkout/success`;
+
     return (
         <Button
             className={className}
-            onClick={async () => {
-                try {
-                    const res = await fetch("/api/checkout", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            product_cart: [
-                                { product_id: productId, quantity: 1 },
-                            ],
-                            return_url: `${window.location.origin}/checkout/success`,
-                        }),
-                    });
-
-                    const data = await res.json();
-                    // Adapter might return url or checkout_url depending on version
-                    if (data.checkout_url || data.url) {
-                        window.location.href = data.checkout_url || data.url;
-                    } else {
-                        alert("Failed to initialize checkout");
-                    }
-                } catch (e) {
-                    console.error(e);
-                    alert("Error starting checkout");
-                }
-            }}
+            onClick={() => window.location.href = checkoutUrl}
         >
             {children || "Buy now"}
         </Button>
