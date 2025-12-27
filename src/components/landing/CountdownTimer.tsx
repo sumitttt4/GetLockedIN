@@ -31,11 +31,11 @@ export function CountdownTimer() {
     }, []);
 
     return (
-        <div className="inline-flex items-center gap-3 px-4 py-2.5 bg-orange-500/10 border border-orange-500/20 rounded-full">
-            <Calendar className="w-4 h-4 text-orange-400" />
+        <div className="inline-flex items-center gap-3 px-4 py-2.5 bg-orange-50 border border-orange-100 rounded-full shadow-sm">
+            <Calendar className="w-4 h-4 text-orange-600" />
             <div className="flex items-center gap-2 font-mono text-sm">
-                <span className="text-white/70 font-medium">Launch in:</span>
-                <span className="text-orange-400 font-bold">
+                <span className="text-zinc-600 font-medium">Launch in:</span>
+                <span className="text-orange-600 font-bold">
                     {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
                 </span>
             </div>

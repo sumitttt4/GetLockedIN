@@ -7,40 +7,38 @@ import { Button } from "@/components/ui/button";
 
 export default function LoginPage() {
     return (
-        <div className="min-h-screen flex items-center justify-center p-4 bg-black relative overflow-hidden">
+        <div className="min-h-screen flex items-center justify-center p-4 bg-zinc-50 relative overflow-hidden">
             {/* Background */}
-            <div className="absolute inset-0 pattern-grid opacity-30" />
+            <div className="absolute inset-0 pattern-grid opacity-[0.03]" />
 
-            <Card className="w-full max-w-md border-white/10 bg-white/[0.02] backdrop-blur-xl shadow-2xl relative z-10">
+            <Card className="w-full max-w-md border-zinc-200 bg-white/50 backdrop-blur-xl shadow-xl relative z-10">
                 <CardContent className="p-10 text-center">
                     {/* Logo */}
                     <div className="flex flex-col items-center mb-8">
-                        <div className="h-16 w-16 bg-white rounded-2xl flex items-center justify-center mb-4 glow-white">
-                            <Lock className="h-8 w-8 text-black" />
+                        <div className="h-16 w-16 bg-black rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-black/20">
+                            <Lock className="h-8 w-8 text-white" />
                         </div>
-                        <h1 className="text-2xl font-bold text-white">Login Opens Dec 31st</h1>
-                        <p className="text-white/50 text-sm mt-2">
-                            Join the waitlist to get early access
-                        </p>
+                        <h1 className="text-3xl font-bold text-zinc-900 mb-2">Welcome Back</h1>
+                        <p className="text-zinc-500">Enter your credentials to access your account</p>
                     </div>
 
                     {/* Message */}
-                    <div className="mb-8 p-6 bg-white/5 border border-white/10 rounded-xl">
-                        <p className="text-white/70 leading-relaxed">
-                            We're launching on <span className="font-semibold text-white">December 31st</span>.
-                            Reserve your spot now for just <span className="text-green-400 font-bold">$5</span> (early bird)
-                            or <span className="text-white font-bold">$9</span> after.
+                    <div className="mb-8 p-6 bg-zinc-50 border border-zinc-100 rounded-xl">
+                        <p className="text-zinc-600 leading-relaxed">
+                            We&apos;re launching on <span className="font-semibold text-zinc-900">December 31st</span>.
+                            Reserve your spot now for just <span className="text-green-600 font-bold">$5</span> (early bird)
+                            or <span className="text-zinc-900 font-bold">$9</span> after.
                         </p>
                     </div>
 
                     {/* CTA */}
                     <Link href="/">
-                        <Button className="w-full h-12 bg-white hover:bg-white/90 text-black font-semibold glow-white">
+                        <Button className="w-full h-12 bg-black hover:bg-zinc-800 text-white font-semibold shadow-lg shadow-black/10">
                             Join Waitlist
                         </Button>
                     </Link>
 
-                    <p className="text-white/40 text-xs mt-6">
+                    <p className="text-zinc-400 text-xs mt-6">
                         One-time payment. Lifetime access.
                     </p>
                 </CardContent>

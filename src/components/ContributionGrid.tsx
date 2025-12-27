@@ -43,16 +43,16 @@ export function ContributionGrid({ className }: ContributionGridProps) {
         <div className={cn("w-full", className)}>
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xs font-mono uppercase tracking-widest text-white/40">
+                <h3 className="text-xs font-mono uppercase tracking-widest text-zinc-500">
                     365 Day Grid
                 </h3>
-                <div className="flex items-center gap-4 text-xs font-mono text-white/40">
+                <div className="flex items-center gap-4 text-xs font-mono text-zinc-500">
                     <span className="flex items-center gap-1.5">
                         <span className="w-2.5 h-2.5 rounded-sm bg-green-500" />
                         Shipped
                     </span>
                     <span className="flex items-center gap-1.5">
-                        <span className="w-2.5 h-2.5 rounded-sm bg-red-500/60" />
+                        <span className="w-2.5 h-2.5 rounded-sm bg-red-400" />
                         Missed
                     </span>
                 </div>
@@ -69,9 +69,9 @@ export function ContributionGrid({ className }: ContributionGridProps) {
                                     className={cn(
                                         "w-2.5 h-2.5 rounded-sm transition-all duration-200 hover:scale-150 cursor-pointer",
                                         day.status === 'active' && "bg-green-400 animate-pulse",
-                                        day.status === 'completed' && "bg-green-500/80",
-                                        day.status === 'missed' && "bg-red-500/50",
-                                        day.status === 'empty' && "bg-white/5"
+                                        day.status === 'completed' && "bg-green-500",
+                                        day.status === 'missed' && "bg-red-400",
+                                        day.status === 'empty' && "bg-zinc-200"
                                     )}
                                     title={`${day.date}: ${day.status}`}
                                 />
@@ -83,14 +83,14 @@ export function ContributionGrid({ className }: ContributionGridProps) {
 
             {/* Stats */}
             <div className="flex items-center gap-6 mt-4 text-xs font-mono">
-                <div className="text-white/40">
-                    <span className="text-green-400 font-bold">{mockData.filter(d => d.status === 'completed' || d.status === 'active').length}</span> shipped
+                <div className="text-zinc-500">
+                    <span className="text-green-600 font-bold">{mockData.filter(d => d.status === 'completed' || d.status === 'active').length}</span> shipped
                 </div>
-                <div className="text-white/40">
-                    <span className="text-red-400 font-bold">{mockData.filter(d => d.status === 'missed').length}</span> missed
+                <div className="text-zinc-500">
+                    <span className="text-red-600 font-bold">{mockData.filter(d => d.status === 'missed').length}</span> missed
                 </div>
-                <div className="text-white/40">
-                    Streak: <span className="text-white font-bold">12</span> days
+                <div className="text-zinc-500">
+                    Streak: <span className="text-zinc-900 font-bold">12</span> days
                 </div>
             </div>
         </div>

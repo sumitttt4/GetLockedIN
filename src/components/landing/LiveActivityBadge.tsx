@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Users } from "lucide-react";
+
 
 export function LiveActivityBadge() {
     const [count, setCount] = useState(1247);

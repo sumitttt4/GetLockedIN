@@ -1,75 +1,99 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { CountdownTimer } from "@/components/landing/CountdownTimer";
 import { LiveActivityBadge } from "@/components/landing/LiveActivityBadge";
+import { Navbar } from "@/components/layout/Navbar";
 import {
-    ArrowRight,
     Lock,
     Zap,
     Target,
     Trophy,
-    DollarSign,
     TrendingUp,
+    Check
 } from "lucide-react";
 import Link from "next/link";
 import { ContributionGrid } from "@/components/ContributionGrid";
 import { DuelCard } from "@/components/DuelCard";
 import { LockedInSwitch } from "@/components/LockedInSwitch";
+import { DailyLogPreview } from "@/components/landing/DailyLogPreview";
+import { Marquee } from "@/components/landing/Marquee";
+import { FeaturesSection } from "@/components/landing/FeaturesSection";
 import { motion } from "framer-motion";
+import confetti from "canvas-confetti";
+import SmoothScroll from "@/components/SmoothScroll";
 
 export default function LandingPage() {
+
+    const [email, setEmail] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
+
+    const handleWaitlistSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            const response = await fetch('/api/waitlist', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email }),
+            });
+
+            if (response.ok) {
+                setSubmitted(true);
+                sessionStorage.setItem("waitlist_email", email);
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#22c55e', '#ffffff', '#000000']
+                });
+            } else {
+                alert('Something went wrong. Please try again.');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Error joining waitlist');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
-        <div className="flex flex-col min-h-screen bg-black">
+        <div className="flex flex-col min-h-screen relative overflow-x-hidden">
+            <SmoothScroll />
+            {/* Crosshatch Art - Light Pattern */}
+            <div
+                className="fixed inset-0 z-0 pointer-events-none bg-white"
+                style={{
+                    backgroundImage: `
+                        repeating-linear-gradient(22.5deg, transparent, transparent 2px, rgba(75, 85, 99, 0.06) 2px, rgba(75, 85, 99, 0.06) 3px, transparent 3px, transparent 8px),
+                        repeating-linear-gradient(67.5deg, transparent, transparent 2px, rgba(107, 114, 128, 0.05) 2px, rgba(107, 114, 128, 0.05) 3px, transparent 3px, transparent 8px),
+                        repeating-linear-gradient(112.5deg, transparent, transparent 2px, rgba(55, 65, 81, 0.04) 2px, rgba(55, 65, 81, 0.04) 3px, transparent 3px, transparent 8px),
+                        repeating-linear-gradient(157.5deg, transparent, transparent 2px, rgba(31, 41, 55, 0.03) 2px, rgba(31, 41, 55, 0.03) 3px, transparent 3px, transparent 8px)
+                    `,
+                }}
+            />
             {/* Content */}
             <div className="relative z-10 flex flex-col min-h-screen">
                 {/* Navbar */}
-                <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/80 backdrop-blur-xl">
-                    <div className="max-w-6xl mx-auto flex h-16 items-center justify-between px-6">
-                        <div className="flex items-center gap-2 font-semibold text-lg">
-                            <div className="h-8 w-8 bg-white rounded-lg flex items-center justify-center glow-white">
-                                <Lock className="h-4 w-4 text-black" />
-                            </div>
-                            <span className="text-white">LockedIn</span>
-                        </div>
-
-                        <div className="hidden md:block">
-                            <LiveActivityBadge />
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                            <Link href="/login">
-                                <Button variant="ghost" className="text-white/70 hover:text-white hover:bg-white/10">
-                                    Sign In
-                                </Button>
-                            </Link>
-                            <Link href="/waitlist">
-                                <Button className="bg-white hover:bg-white/90 text-black glow-white font-semibold">
-                                    Join Waitlist
-                                </Button>
-                            </Link>
-                        </div>
-                    </div>
-                </header>
+                <Navbar />
 
                 <main className="flex-1">
                     {/* Hero Section */}
-                    <section className="pt-20 pb-16 md:pt-28 md:pb-24 relative overflow-hidden">
+                    <section id="hero" className="pt-20 pb-16 md:pt-28 md:pb-24 relative overflow-hidden">
                         {/* Background Grid */}
-                        <div className="absolute inset-0 pattern-grid opacity-40" />
+                        <div className="absolute inset-0 pattern-grid opacity-10" />
+
+                        {/* Animated Background Blob - Subtler in light mode */}
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-emerald-100 to-transparent opacity-60 blur-3xl animate-pulse-subtle -z-10" />
 
                         <div className="max-w-6xl mx-auto px-6 relative z-10">
                             <div className="flex flex-col items-center text-center space-y-8 max-w-4xl mx-auto">
-                                {/* Countdown Badge */}
-                                <motion.div
-                                    initial={{ opacity: 0, y: -20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.5 }}
-                                >
-                                    <CountdownTimer />
-                                </motion.div>
+                                {/* Headline */}
 
                                 {/* Headline */}
                                 <motion.div
@@ -78,16 +102,16 @@ export default function LandingPage() {
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ duration: 0.6, delay: 0.2 }}
                                 >
-                                    <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.05]">
-                                        <span className="text-white">Another year.</span>
+                                    <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.05] text-zinc-900">
+                                        <span>Another year.</span>
                                         <br />
-                                        <span className="text-white">Another broken promise?</span>
+                                        <span>Another broken promise?</span>
                                         <br />
-                                        <span className="text-white/40">Not this time.</span>
+                                        <span className="text-zinc-400">Not this time.</span>
                                     </h1>
-                                    <p className="text-xl md:text-2xl text-white/60 max-w-2xl mx-auto leading-relaxed">
+                                    <p className="text-xl md:text-2xl text-zinc-500 max-w-2xl mx-auto leading-relaxed">
                                         Build in public where{" "}
-                                        <span className="font-semibold text-white">showing up daily</span>{" "}
+                                        <span className="font-semibold text-zinc-900">showing up daily</span>{" "}
                                         is the only thing that matters.
                                     </p>
                                 </motion.div>
@@ -99,304 +123,183 @@ export default function LandingPage() {
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ duration: 0.6, delay: 0.4 }}
                                 >
-                                    <div className="flex items-center space-x-2 bg-white/5 p-2 rounded-xl border border-white/10 focus-within:border-white/30 focus-within:bg-white/[0.07] transition-all">
-                                        <Input
-                                            type="email"
-                                            placeholder="your@email.com"
-                                            className="border-0 focus-visible:ring-0 shadow-none text-base bg-transparent h-11 font-medium text-white placeholder:text-white/30 pl-4"
-                                        />
-                                        <Link href="/waitlist" className="flex-shrink-0">
-                                            <Button className="h-11 px-6 bg-white hover:bg-white/90 text-black font-semibold rounded-lg glow-white hover:scale-105 transition-transform">
-                                                Join Waitlist
+                                    {!submitted ? (
+                                        <form onSubmit={handleWaitlistSubmit} className="flex items-center space-x-2 bg-white p-2 rounded-xl border border-zinc-200 shadow-xl shadow-zinc-200/50 focus-within:border-zinc-400 transition-all">
+                                            <Input
+                                                type="email"
+                                                placeholder="your@email.com"
+                                                value={email}
+                                                onChange={(e) => setEmail(e.target.value)}
+                                                required
+                                                className="border-0 focus-visible:ring-0 shadow-none text-base bg-transparent h-11 font-medium text-zinc-900 placeholder:text-zinc-400 pl-4"
+                                            />
+                                            <Button
+                                                type="submit"
+                                                disabled={loading || !email}
+                                                className="h-11 px-6 bg-black hover:bg-zinc-800 text-white font-semibold rounded-lg shadow-lg hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
+                                            >
+                                                {loading ? "Joining..." : "Join Waitlist"}
                                             </Button>
-                                        </Link>
-                                    </div>
+                                        </form>
+                                    ) : (
+                                        <motion.div
+                                            initial={{ opacity: 0, scale: 0.95 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            className="p-4 bg-green-50 border border-green-100 rounded-xl flex items-center gap-4 shadow-sm"
+                                        >
+                                            <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                                                <Check className="w-5 h-5 text-green-600" />
+                                            </div>
+                                            <div className="text-left">
+                                                <p className="text-zinc-900 font-bold">You&apos;re LockedIN!</p>
+                                                <p className="text-zinc-500 text-sm mb-2">Check your inbox for confirmation.</p>
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    className="h-7 text-xs border-green-200 text-green-700 hover:bg-green-50 hover:text-green-800 bg-white"
+                                                    onClick={() => window.open(`https://twitter.com/intent/tweet?text=I%20just%20joined%20the%20war%20against%20mediocrity.%20%0A%0ASecure%20your%20spot%20on%20the%20GetLockedIN%20protocol%20before%202025.%20%F0%9F%94%92%20%0A%0Ahttps%3A%2F%2Fgetlockedin.live`, '_blank')}
+                                                >
+                                                    Share on X
+                                                </Button>
+                                            </div>
+                                        </motion.div>
+                                    )}
 
-                                    <p className="text-sm text-white/40">
-                                        <span className="text-green-400 font-semibold">$5 early bird</span> · $9 regular · Lifetime access
+                                    <p className="text-sm text-zinc-400">
+                                        <span className="text-green-600 font-semibold">$5 early bird</span> · Limited spots · Lifetime access
                                     </p>
                                 </motion.div>
                             </div>
                         </div>
                     </section>
 
-                    {/* How It Works - Redesigned */}
-                    <section className="py-32 border-y border-white/5 relative overflow-hidden">
-                        {/* Background pattern */}
-                        <div className="absolute inset-0 pattern-grid opacity-20" />
+                    {/* Marquee */}
+                    <Marquee className="mb-20" />
 
-                        <div className="max-w-6xl mx-auto px-6 relative z-10">
-                            <div className="text-center mb-20">
-                                <div className="inline-block mb-4 px-4 py-1.5 bg-white/5 border border-white/10 rounded-full">
-                                    <span className="text-xs font-mono text-white/60 uppercase tracking-widest">The Protocol</span>
-                                </div>
-                                <h2 className="text-4xl md:text-5xl font-black text-white mb-6">
-                                    Three steps. Zero excuses.
-                                </h2>
-                                <p className="text-xl text-white/50 max-w-2xl mx-auto">
-                                    The simplest accountability system that actually works.
-                                </p>
-                            </div>
+                    {/* Features Section (GSAP Animated) */}
+                    <FeaturesSection />
 
-                            <div className="grid md:grid-cols-3 gap-12 md:gap-16">
-                                {/* Step 1 */}
-                                <div className="relative group">
-                                    {/* Connector line */}
-                                    <div className="hidden md:block absolute top-6 left-full w-16 h-px bg-gradient-to-r from-white/20 to-transparent" />
-
-                                    <div className="flex flex-col space-y-6">
-                                        {/* Number badge */}
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center group-hover:bg-white/10 transition-colors">
-                                                <span className="text-2xl font-black text-white">1</span>
-                                            </div>
-                                            <div className="h-px flex-1 bg-white/10" />
-                                        </div>
-
-                                        {/* Icon */}
-                                        <div className="w-16 h-16 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center group-hover:bg-white/10 group-hover:border-white/20 transition-all">
-                                            <Target className="w-8 h-8 text-white/70" />
-                                        </div>
-
-                                        {/* Content */}
-                                        <div>
-                                            <h3 className="text-2xl font-bold text-white mb-3">
-                                                Set Your Goal
-                                            </h3>
-                                            <p className="text-white/50 leading-relaxed">
-                                                Ship a product. Build an audience. Hit revenue targets. Pick one battle and commit.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Step 2 */}
-                                <div className="relative group">
-                                    {/* Connector line */}
-                                    <div className="hidden md:block absolute top-6 left-full w-16 h-px bg-gradient-to-r from-white/20 to-transparent" />
-
-                                    <div className="flex flex-col space-y-6">
-                                        {/* Number badge */}
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center group-hover:bg-white/10 transition-colors">
-                                                <span className="text-2xl font-black text-white">2</span>
-                                            </div>
-                                            <div className="h-px flex-1 bg-white/10" />
-                                        </div>
-
-                                        {/* Icon */}
-                                        <div className="w-16 h-16 bg-green-500/10 border border-green-500/20 rounded-2xl flex items-center justify-center group-hover:bg-green-500/20 group-hover:border-green-500/30 transition-all">
-                                            <Zap className="w-8 h-8 text-green-400" />
-                                        </div>
-
-                                        {/* Content */}
-                                        <div>
-                                            <h3 className="text-2xl font-bold text-white mb-3">
-                                                Show Up Daily
-                                            </h3>
-                                            <p className="text-white/50 leading-relaxed">
-                                                One login per day = proof of life. Your public grid turns green or red. No hiding.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Step 3 */}
-                                <div className="relative group">
-                                    <div className="flex flex-col space-y-6">
-                                        {/* Number badge */}
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center group-hover:bg-white/10 transition-colors">
-                                                <span className="text-2xl font-black text-white">3</span>
-                                            </div>
-                                            <div className="h-px flex-1 bg-white/10" />
-                                        </div>
-
-                                        {/* Icon */}
-                                        <div className="w-16 h-16 bg-orange-500/10 border border-orange-500/20 rounded-2xl flex items-center justify-center group-hover:bg-orange-500/20 group-hover:border-orange-500/30 transition-all">
-                                            <Trophy className="w-8 h-8 text-orange-400" />
-                                        </div>
-
-                                        {/* Content */}
-                                        <div>
-                                            <h3 className="text-2xl font-bold text-white mb-3">
-                                                Compete & Win
-                                            </h3>
-                                            <p className="text-white/50 leading-relaxed">
-                                                Challenge friends to 7-day duels. Miss a day? Lose HP. Loser wears the badge of shame.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* Features Bento Grid */}
-                    <section className="py-20">
-                        <div className="max-w-6xl mx-auto px-6">
+                    {/* Pricing Section */}
+                    <section id="pricing" className="py-24 border-t border-zinc-100 scroll-mt-16">
+                        <div className="max-w-5xl mx-auto px-6">
                             <div className="text-center mb-16">
-                                <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                                    Everything you need to stay accountable
+                                <h2 className="text-3xl md:text-4xl font-black text-zinc-900 mb-4">
+                                    Simple Pricing
                                 </h2>
-                                <p className="text-lg text-white/60">
-                                    No fluff. Just the tools that force you to show up.
+                                <p className="text-zinc-500 text-lg">
+                                    One-time payment. Lifetime access. No subscriptions.
                                 </p>
                             </div>
 
-                            <div className="grid md:grid-cols-2 gap-6">
-                                {/* Grid of Truth - Large */}
-                                <Card className="md:col-span-2 bg-white/[0.02] border-white/10 shadow-lg overflow-hidden">
-                                    <CardContent className="p-8 md:p-10">
-                                        <div className="flex items-start justify-between mb-6">
-                                            <div>
-                                                <div className="flex items-center gap-2 text-green-400 text-sm font-medium mb-2">
-                                                    <Target className="w-4 h-4" />
-                                                    THE PROOF
-                                                </div>
-                                                <h3 className="text-2xl font-bold text-white mb-2">
-                                                    Grid of Truth
-                                                </h3>
-                                                <p className="text-white/50 max-w-xl">
-                                                    365-day public consistency record. Green = showed up. Red = missed.
-                                                    No editing. No hiding. Pure accountability.
-                                                </p>
+                            <div className="max-w-md mx-auto">
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                >
+                                    <Card className="relative bg-gradient-to-b from-white to-zinc-50 border-zinc-200 shadow-xl hover:shadow-2xl transition-all">
+                                        {/* Badge */}
+                                        <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                                            <div className="px-4 py-1.5 bg-orange-600 text-white text-xs font-bold rounded-full flex items-center gap-1.5 shadow-md shadow-orange-200">
+                                                <Zap className="w-3.5 h-3.5 fill-current" />
+                                                EARLY BIRD - Limited Spots
                                             </div>
                                         </div>
-                                        <ContributionGrid />
-                                    </CardContent>
-                                </Card>
 
-                                {/* Focus Mode */}
-                                <Card className="bg-white/[0.02] border-white/10 shadow-lg">
-                                    <CardContent className="p-8">
-                                        <div className="flex items-center gap-2 text-white/70 text-sm font-medium mb-2">
-                                            <Zap className="w-4 h-4" />
-                                            THE ACTION
-                                        </div>
-                                        <h3 className="text-xl font-bold text-white mb-2">
-                                            Focus Mode
-                                        </h3>
-                                        <p className="text-white/50 mb-6 text-sm">
-                                            Flip the switch. Broadcast your deep work. Let the world see you lock in.
-                                        </p>
-                                        <div className="flex justify-center">
-                                            <LockedInSwitch />
-                                        </div>
-                                    </CardContent>
-                                </Card>
-
-                                {/* Revenue Tracking */}
-                                <Card className="bg-white/[0.02] border-white/10 shadow-lg">
-                                    <CardContent className="p-8">
-                                        <div className="flex items-center gap-2 text-green-400 text-sm font-medium mb-2">
-                                            <TrendingUp className="w-4 h-4" />
-                                            THE METRICS
-                                        </div>
-                                        <h3 className="text-xl font-bold text-white mb-2">
-                                            Live Payment Tracking
-                                        </h3>
-                                        <p className="text-white/50 mb-6 text-sm leading-relaxed">
-                                            Connect your payment API and track revenue goals automatically. Integrate with Stripe, Dodo, Polar, or Lemon Squeezy to track your revenue goals in real-time. Set MRR, ARR, or total revenue targets and watch your progress sync automatically.
-                                        </p>
-                                        <div className="space-y-4">
-                                            <div className="p-4 bg-white/5 rounded-xl border border-white/10">
-                                                <div className="flex justify-between items-baseline mb-2">
-                                                    <span className="text-xs text-white/40">Current MRR</span>
-                                                    <DollarSign className="w-4 h-4 text-white/40" />
-                                                </div>
-                                                <div className="font-mono text-3xl font-bold text-white">$849</div>
-                                                <div className="mt-3 space-y-1.5">
-                                                    <div className="flex justify-between text-xs">
-                                                        <span className="text-white/50">Monthly Growth</span>
-                                                        <span className="text-green-400 font-semibold">+23%</span>
-                                                    </div>
-                                                    <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
-                                                        <div className="h-full bg-green-500 rounded-full" style={{ width: '78%' }} />
-                                                    </div>
+                                        <CardContent className="p-8 pt-10">
+                                            {/* Icon */}
+                                            <div className="flex justify-center mb-4">
+                                                <div className="w-16 h-16 bg-zinc-50 border border-zinc-100 rounded-2xl flex items-center justify-center text-zinc-900 shadow-sm">
+                                                    <Lock className="w-8 h-8" />
                                                 </div>
                                             </div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
 
-                                {/* 1v1 Duels */}
-                                <Card className="md:col-span-2 bg-white/[0.02] border-white/10 shadow-lg">
-                                    <CardContent className="p-8">
-                                        <div className="flex items-center gap-2 text-orange-400 text-sm font-medium mb-2">
-                                            <Trophy className="w-4 h-4" />
-                                            THE ARENA
-                                        </div>
-                                        <h3 className="text-2xl font-bold text-white mb-2">
-                                            1v1 Consistency Battles
-                                        </h3>
-                                        <p className="text-white/50 mb-6">
-                                            Challenge friends to 7-day duels. Street Fighter-style health bars.
-                                            Winner takes credibility. Loser wears the shame badge.
-                                        </p>
-                                        <div className="max-w-md">
-                                            <DuelCard
-                                                challenger={{ name: "You", username: "you", hp: 100 }}
-                                                opponent={{ name: "Alex", username: "alex", hp: 45 }}
-                                                daysRemaining={4}
-                                            />
-                                        </div>
-                                    </CardContent>
-                                </Card>
+                                            {/* Price */}
+                                            <div className="text-center mb-6">
+                                                <div className="flex items-center justify-center gap-3 mb-2">
+                                                    <span className="text-zinc-400 line-through text-2xl">$9</span>
+                                                    <span className="text-6xl font-black text-zinc-900">$5</span>
+                                                </div>
+                                                <div className="text-zinc-500">One-time payment</div>
+                                            </div>
+
+                                            {/* Features */}
+                                            <div className="space-y-3 mb-8">
+                                                <div className="flex items-start gap-3">
+                                                    <Check className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
+                                                    <span className="text-zinc-700">Lifetime access to DayZero</span>
+                                                </div>
+                                                <div className="flex items-start gap-3">
+                                                    <Check className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
+                                                    <span className="text-zinc-700">Early access (Dec 31st)</span>
+                                                </div>
+                                                <div className="flex items-start gap-3">
+                                                    <Check className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
+                                                    <span className="text-zinc-700">Founder&apos;s Badge profile</span>
+                                                </div>
+                                                <div className="flex items-start gap-3">
+                                                    <Check className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
+                                                    <span className="text-zinc-700">Future Pro features included</span>
+                                                </div>
+                                            </div>
+
+                                            <Link href="/checkout">
+                                                <Button className="w-full h-14 bg-zinc-900 hover:bg-zinc-800 text-white font-bold text-lg shadow-lg shadow-zinc-900/20">
+                                                    Get Lifetime Access
+                                                </Button>
+                                            </Link>
+                                        </CardContent>
+                                    </Card>
+                                </motion.div>
                             </div>
                         </div>
                     </section>
 
                     {/* Final CTA */}
-                    <section className="py-24 border-t border-white/5">
+                    <section className="py-24 border-t border-zinc-100">
                         <div className="max-w-4xl mx-auto px-6 text-center">
                             <div className="space-y-6">
-                                <h2 className="text-3xl md:text-5xl font-bold text-white">
-                                    1,247 spots already reserved.
+                                <h2 className="text-3xl md:text-5xl font-bold text-zinc-900">
+                                    Ready to make 2025 different?
                                     <br />
-                                    <span className="text-green-400">Will you join them?</span>
+                                    <span className="text-green-600">Join the waitlist.</span>
                                 </h2>
-                                <p className="text-xl text-white/60">
-                                    <span className="text-green-400 font-semibold">Early bird: $5</span> · Regular: $9 · Lifetime access
-                                </p>
 
                                 <div className="flex flex-col items-center gap-4 pt-6">
-                                    <Link href="/waitlist">
-                                        <Button size="lg" className="h-14 px-10 bg-white hover:bg-white/90 text-black text-lg font-semibold glow-white hover:scale-105 transition-transform">
+                                    <Link href="#hero">
+                                        <Button size="lg" className="h-14 px-10 bg-black hover:bg-zinc-800 text-white text-lg font-semibold shadow-xl shadow-black/20 hover:scale-105 transition-transform">
                                             Join Waitlist
                                         </Button>
                                     </Link>
-                                    <CountdownTimer />
                                 </div>
                             </div>
                         </div>
                     </section>
 
                     {/* Footer */}
-                    <footer className="border-t border-white/5 py-12">
+                    <footer className="border-t border-zinc-100 py-12 bg-zinc-50/50">
                         <div className="max-w-6xl mx-auto px-6">
                             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                                 <div className="flex items-center gap-2">
-                                    <div className="h-6 w-6 bg-white rounded-lg flex items-center justify-center">
-                                        <Lock className="h-3 w-3 text-black" />
+                                    <div className="h-6 w-6 bg-black rounded-lg flex items-center justify-center">
+                                        <Lock className="h-3 w-3 text-white" />
                                     </div>
-                                    <span className="font-semibold text-white">LockedIn</span>
+                                    <span className="font-semibold text-zinc-900">GetLockedIN</span>
                                 </div>
 
-                                <div className="flex items-center gap-6 text-sm text-white/40">
-                                    <a href="#" className="hover:text-white transition-colors">Privacy</a>
-                                    <a href="#" className="hover:text-white transition-colors">Terms</a>
-                                    <a href="#" className="hover:text-white transition-colors">Contact</a>
+                                <div className="flex items-center gap-6 text-sm text-zinc-500">
+                                    <a href="#" className="hover:text-zinc-900 transition-colors">Privacy</a>
+                                    <a href="#" className="hover:text-zinc-900 transition-colors">Terms</a>
+                                    <a href="#" className="hover:text-zinc-900 transition-colors">Contact</a>
                                 </div>
 
-                                <p className="text-sm text-white/40">
-                                    © 2025 LockedIn. Consistency is the only currency.
+                                <p className="text-sm text-zinc-400">
+                                    © 2025 GetLockedIN. Consistency is the only currency.
                                 </p>
                             </div>
                         </div>
                     </footer>
                 </main>
             </div>
-        </div>
+        </div >
     );
 }

@@ -48,7 +48,7 @@ export function LockedInSwitch({ onToggle, className }: LockedInSwitchProps) {
             {/* Timer Display */}
             <div className={cn(
                 "text-5xl md:text-7xl font-mono font-bold tracking-tighter transition-all duration-500",
-                isLockedIn ? "text-green-400" : "text-white/20"
+                isLockedIn ? "text-orange-600" : "text-zinc-700"
             )}>
                 {formatTime(elapsedTime)}
             </div>
@@ -56,11 +56,11 @@ export function LockedInSwitch({ onToggle, className }: LockedInSwitchProps) {
             {/* Status Label */}
             <div className={cn(
                 "flex items-center gap-2 text-xs font-mono uppercase tracking-widest transition-all duration-300",
-                isLockedIn ? "text-green-400" : "text-white/40"
+                isLockedIn ? "text-orange-600" : "text-zinc-500"
             )}>
                 <span className={cn(
                     "w-2 h-2 rounded-full transition-all duration-300",
-                    isLockedIn ? "bg-green-400 animate-pulse" : "bg-white/20"
+                    isLockedIn ? "bg-orange-600 animate-pulse" : "bg-zinc-400"
                 )} />
                 {isLockedIn ? "Currently Locked In" : "Ready to Lock In"}
             </div>
@@ -72,8 +72,8 @@ export function LockedInSwitch({ onToggle, className }: LockedInSwitchProps) {
                 className={cn(
                     "relative h-16 w-56 rounded-full text-base font-bold uppercase tracking-widest transition-all duration-500",
                     isLockedIn
-                        ? "bg-green-500 text-black hover:bg-green-400 glow-green-intense"
-                        : "bg-white text-black hover:bg-white/90"
+                        ? "bg-orange-600 text-white hover:bg-orange-500 shadow-lg shadow-orange-600/20"
+                        : "bg-black text-white hover:bg-zinc-800 shadow-lg shadow-black/20"
                 )}
             >
                 <span className="flex items-center gap-2">
@@ -92,7 +92,7 @@ export function LockedInSwitch({ onToggle, className }: LockedInSwitchProps) {
             </Button>
 
             {/* Instruction Text */}
-            <p className="text-xs text-white/30 font-mono text-center max-w-xs">
+            <p className="text-xs text-zinc-400 font-mono text-center max-w-xs">
                 {isLockedIn
                     ? "Focus mode active. Click to end session."
                     : "Click to start. Your status will be visible."

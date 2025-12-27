@@ -28,7 +28,7 @@ const formatEvent = (event: typeof mockEvents[0]) => {
         case 'joined_league':
             return `${event.user} joined the ${event.league} League`;
         case 'duel_won':
-            return `${event.user} defeated ${event.opponent} in a Duel! 🏆`;
+            return `${event.user} defeated ${event.opponent} in a Duel!`;
         default:
             return '';
     }
@@ -37,16 +37,16 @@ const formatEvent = (event: typeof mockEvents[0]) => {
 const getEventColor = (type: string) => {
     switch (type) {
         case 'locked_in':
-            return 'text-green-400';
+            return 'text-green-600';
         case 'shipped':
-            return 'text-blue-400';
+            return 'text-blue-600';
         case 'duel_started':
         case 'duel_won':
-            return 'text-red-400';
+            return 'text-red-500';
         case 'joined_league':
-            return 'text-yellow-400';
+            return 'text-yellow-600';
         default:
-            return 'text-white';
+            return 'text-zinc-600';
     }
 };
 
@@ -56,12 +56,12 @@ export function GlobalFeed({ className }: GlobalFeedProps) {
 
     return (
         <div className={cn(
-            "relative overflow-hidden bg-white/[0.02] border-y border-white/5 py-3",
+            "relative overflow-hidden bg-zinc-50 border-y border-zinc-200 py-3",
             className
         )}>
             {/* Gradient Fades */}
-            <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-black to-transparent z-10" />
-            <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-black to-transparent z-10" />
+            <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-zinc-50 to-transparent z-10" />
+            <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-zinc-50 to-transparent z-10" />
 
             {/* Scrolling Content */}
             <div className="animate-marquee flex whitespace-nowrap gap-12">
