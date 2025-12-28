@@ -31,6 +31,9 @@ export default function LandingPage() {
     const [email, setEmail] = useState("");
     const [loading, setLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
+    const [waitlistPosition, setWaitlistPosition] = useState(0);
+    const [referralCode, setReferralCode] = useState("");
+    const [copied, setCopied] = useState(false);
 
     const handleWaitlistSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -45,6 +48,15 @@ export default function LandingPage() {
             if (response.ok) {
                 setSubmitted(true);
                 sessionStorage.setItem("waitlist_email", email);
+
+                // Generate random position (for viral effect)
+                const position = Math.floor(Math.random() * 400) + 100;
+                setWaitlistPosition(position);
+
+                // Generate referral code from email
+                const code = btoa(email).slice(0, 8).toUpperCase();
+                setReferralCode(code);
+
                 confetti({
                     particleCount: 100,
                     spread: 70,
@@ -60,6 +72,14 @@ export default function LandingPage() {
         } finally {
             setLoading(false);
         }
+    };
+
+    const referralLink = `https://getlockedin.live?ref=${referralCode}`;
+
+    const copyReferralLink = () => {
+        navigator.clipboard.writeText(referralLink);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
     };
 
     return (
@@ -145,43 +165,76 @@ export default function LandingPage() {
                                         <motion.div
                                             initial={{ opacity: 0, scale: 0.95 }}
                                             animate={{ opacity: 1, scale: 1 }}
-                                            className="p-4 bg-green-50 border border-green-100 rounded-xl flex items-center gap-4 shadow-sm"
+                                            className="space-y-4"
                                         >
-                                            <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                                                <Check className="w-5 h-5 text-green-600" />
+                                            {/* Position Card */}
+                                            <div className="p-6 bg-gradient-to-br from-zinc-900 to-zinc-800 rounded-2xl text-center shadow-xl">
+                                                <div className="flex items-center justify-center gap-2 mb-2">
+                                                    <Check className="w-5 h-5 text-green-400" />
+                                                    <span className="text-green-400 font-semibold">You&apos;re on the list!</span>
+                                                </div>
+                                                <p className="text-5xl font-black text-white mb-1">#{waitlistPosition}</p>
+                                                <p className="text-zinc-400 text-sm">in line</p>
                                             </div>
-                                            <div className="text-left">
-                                                <p className="text-zinc-900 font-bold">You&apos;re LockedIN!</p>
-                                                <p className="text-zinc-500 text-sm mb-2">Check your inbox for confirmation.</p>
+
+                                            {/* Referral Hook */}
+                                            <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                                                <p className="text-zinc-900 font-bold text-center mb-2">
+                                                    🚀 Want to skip to the front?
+                                                </p>
+                                                <p className="text-zinc-600 text-sm text-center mb-4">
+                                                    Get <span className="font-bold text-amber-600">3 friends</span> to sign up and jump ahead!
+                                                </p>
+
+                                                {/* Referral Link */}
+                                                <div className="flex gap-2">
+                                                    <Input
+                                                        value={referralLink}
+                                                        readOnly
+                                                        className="text-xs bg-white"
+                                                    />
+                                                    <Button
+                                                        onClick={copyReferralLink}
+                                                        variant="outline"
+                                                        className="shrink-0"
+                                                    >
+                                                        {copied ? "Copied!" : "Copy"}
+                                                    </Button>
+                                                </div>
+
+                                                {/* Share Buttons */}
+                                                <div className="flex gap-2 mt-3">
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        className="flex-1 h-9 text-xs"
+                                                        onClick={() => window.open(`https://twitter.com/intent/tweet?text=I%27m%20%23${waitlistPosition}%20on%20the%20GetLockedIN%20waitlist.%20Join%20me%3A%20${encodeURIComponent(referralLink)}`, '_blank')}
+                                                    >
+                                                        Share on X
+                                                    </Button>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        className="flex-1 h-9 text-xs"
+                                                        onClick={() => window.open(`https://wa.me/?text=Join%20the%20GetLockedIN%20waitlist%20with%20me!%20${encodeURIComponent(referralLink)}`, '_blank')}
+                                                    >
+                                                        WhatsApp
+                                                    </Button>
+                                                </div>
+                                            </div>
+
+                                            {/* Skip with Payment */}
+                                            <div className="p-4 bg-green-50 border border-green-200 rounded-xl text-center">
+                                                <p className="text-zinc-700 text-sm mb-2">
+                                                    <span className="font-bold">Or skip the line entirely</span> — get instant access for $5
+                                                </p>
                                                 <Button
-                                                    size="sm"
-                                                    variant="outline"
-                                                    className="h-7 text-xs border-green-200 text-green-700 hover:bg-green-50 hover:text-green-800 bg-white"
-                                                    onClick={() => window.open(`https://twitter.com/intent/tweet?text=I%20just%20joined%20the%20war%20against%20mediocrity.%20%0A%0ASecure%20your%20spot%20on%20the%20GetLockedIN%20protocol%20for%202026.%20%F0%9F%94%92%20%0A%0Ahttps%3A%2F%2Fgetlockedin.live`, '_blank')}
+                                                    onClick={() => window.location.href = 'https://checkout.dodopayments.com/buy/pdt_0NUvc8v3ozWTrnPigc0ka?quantity=1&redirect_url=https://getlockedin.live/checkout/success'}
+                                                    className="bg-green-600 hover:bg-green-700 text-white font-bold px-6 h-10 rounded-full shadow-lg"
                                                 >
-                                                    Share on X
+                                                    Pay $5 → Instant Access
                                                 </Button>
                                             </div>
-                                        </motion.div>
-                                    )}
-
-                                    {/* Pay Now CTA - Shows after waitlist signup */}
-                                    {submitted && (
-                                        <motion.div
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ delay: 0.3 }}
-                                            className="mt-4 p-4 bg-gradient-to-r from-zinc-900 to-zinc-800 rounded-xl text-center shadow-lg"
-                                        >
-                                            <p className="text-white text-sm mb-2">
-                                                🔥 <span className="font-bold">Skip the wait!</span> Join the GetLockedIN culture now
-                                            </p>
-                                            <Button
-                                                onClick={() => window.location.href = 'https://checkout.dodopayments.com/buy/pdt_0NUvc8v3ozWTrnPigc0ka?quantity=1&redirect_url=https://getlockedin.live/checkout/success'}
-                                                className="bg-green-500 hover:bg-green-600 text-white font-bold px-6 h-9 rounded-full shadow-lg shadow-green-500/20"
-                                            >
-                                                Pay $5 → Get Instant Access
-                                            </Button>
                                         </motion.div>
                                     )}
 
