@@ -26,6 +26,8 @@ export async function createGoal(formData: FormData) {
         return { error: "Missing required fields (Title, Deadline)" };
     }
 
+    console.log("Creating Goal Payload:", { title, deadline, target_value, user_id: user.id });
+
     const { error } = await supabase.from("goals").insert({
         user_id: user.id,
         title,
@@ -40,7 +42,8 @@ export async function createGoal(formData: FormData) {
     });
 
     if (error) {
-        return { error: error.message };
+        console.error("Supabase Create Goal Error:", error);
+        return { error: `Database Error: ${error.message}` };
     }
 
     revalidatePath("/dashboard");
