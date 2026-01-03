@@ -22,8 +22,8 @@ export default async function DashboardLayout({
         email: 'dev@example.com',
         id: 'dev-user-id'
     } : {
-        email: user.email,
-        id: user.id
+        email: user?.email || '',
+        id: user?.id || ''
     };
 
     const isAdmin = user?.email === 'sumitsharma9128@gmail.com';
