@@ -47,6 +47,28 @@ export async function createGoal(formData: FormData) {
     return { success: "Protocol Initiated" };
 }
 
+export async function getProfile() {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) return null;
+
+    const { data, error } = await supabase
+        .from("profiles")
+        .select("username, display_name, created_at")
+        .eq("id", user.id)
+        .single();
+
+    if (error) return null;
+
+    return {
+        username: data.username,
+        display_name: data.display_name,
+        joined_at: data.created_at,
+        email: user.email
+    };
+}
+
 export async function getGoals() {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();

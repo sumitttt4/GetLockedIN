@@ -23,20 +23,14 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { NorthStarDirective } from "@/components/dashboard/RealFeatures";
-import { connectStripe, getStripeData, getGoals } from "@/app/dashboard/actions";
-
-// --- MOCK DATA FOR PROFILE (Still mock for now) ---
-const USER_PROFILE = {
-  name: "Sumit",
-  location: "Bangalore, IN",
-  bio: "Building the next unicorn. Locked in by default.",
-};
+import { connectStripe, getStripeData, getGoals, getProfile } from "@/app/dashboard/actions";
 
 export default function DashboardPage() {
   const [activeFilter, setActiveFilter] = useState("All Goals");
   const [showCreateModal, setShowCreateModal] = useState(false);
 
   // DATA STATE
+  const [profile, setProfile] = useState<any>(null);
   const [goals, setGoals] = useState<any[]>([]);
   const [isLoadingGoals, setIsLoadingGoals] = useState(true);
 
@@ -48,6 +42,11 @@ export default function DashboardPage() {
 
   // Initial Fetch
   useEffect(() => {
+    // 0. Fetch Profile
+    getProfile().then(data => {
+      if (data) setProfile(data);
+    });
+
     // 1. Fetch Stripe
     getStripeData().then((data) => {
       if (data?.isConnected) {
@@ -106,25 +105,29 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
         {/* Profile Info (8 Cols) */}
-        <div className="lg:col-span-8 bg-white border-2 border-black p-4 sm:p-6 md:p-8 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex flex-col justify-between">
-          <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
+        <div className="lg:col-span-8 bg-white border-2 border-black p-4 sm:p-6 md:p-8 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex flex-col justify-between relative overflow-hidden">
+          {/* Day 1 Badge */}
+          <div className="absolute top-4 right-4 bg-black text-white text-[10px] uppercase font-bold px-2 py-1 tracking-widest border border-white shadow-sm rotate-1">
+            Day 1 Operator
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6 z-10">
             {/* Avatar */}
             <div className="w-24 h-24 bg-zinc-100 border-2 border-black flex items-center justify-center shrink-0">
-              {/* Placeholder for User Initials or Avatar */}
-              <span className="font-black text-4xl uppercase">{USER_PROFILE.name[0]}</span>
+              <span className="font-black text-4xl uppercase">{profile?.username?.[0] || '?'}</span>
             </div>
 
             {/* Details */}
             <div className="space-y-4 flex-1">
               <div>
                 <h5 className="font-mono text-xs text-zinc-500 uppercase tracking-widest mb-1">Your Goalboard</h5>
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tighter uppercase">{USER_PROFILE.name}</h1>
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tighter uppercase truncate">@{profile?.username || 'Loading...'}</h1>
                 <div className="flex items-center gap-2 text-zinc-500 font-mono text-xs mt-1">
-                  <MapPin className="w-3 h-3" /> {USER_PROFILE.location}
+                  <MapPin className="w-3 h-3" /> Global Grid
                 </div>
               </div>
               <p className="text-zinc-600 font-medium max-w-lg">
-                {USER_PROFILE.bio}
+                Protocol Active. Locked in for 2026.
               </p>
             </div>
           </div>
