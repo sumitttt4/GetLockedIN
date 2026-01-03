@@ -10,19 +10,25 @@ export default async function DashboardLayout({
     const supabase = await createClient();
     const { data: { user }, error } = await supabase.auth.getUser();
 
+    // DEV MODE: Bypass for UI development (REMOVE BEFORE PRODUCTION)
+    const DEV_BYPASS = process.env.NODE_ENV === 'development' && process.env.BYPASS_AUTH === 'true';
+
     // Provide defaults if user not found (though middleware should catch this)
-    if (!user) {
+    if (!user && !DEV_BYPASS) {
         redirect('/login');
     }
 
-    const userData = {
+    const userData = DEV_BYPASS ? {
+        email: 'dev@example.com',
+        id: 'dev-user-id'
+    } : {
         email: user.email,
         id: user.id
     };
 
-    const isAdmin = user.email === 'sumitsharma9128@gmail.com';
+    const isAdmin = user?.email === 'sumitsharma9128@gmail.com';
 
-    if (user && !isAdmin) {
+    if (user && !isAdmin && !DEV_BYPASS) {
         // Enforce Payment Gate
         const { data: profile } = await supabase
             .from('profiles')
