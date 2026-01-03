@@ -29,6 +29,7 @@ export function NorthStarDirective() {
     const [currency, setCurrency] = useState("USD");
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+    const formRef = React.useRef<HTMLFormElement>(null);
 
     const currencies = {
         USD: { symbol: "$", rate: 50 },
@@ -44,8 +45,6 @@ export function NorthStarDirective() {
         setMessage(null);
 
         formData.delete('stakes');
-        // Legacy stakes handling if needed, or we can just send it as metadata
-        // For new flow, stakes is optional/secondary.
 
         const result = await createGoal(formData);
 
@@ -53,8 +52,8 @@ export function NorthStarDirective() {
             setMessage({ type: 'error', text: result.error });
         } else if (result?.success) {
             setMessage({ type: 'success', text: result.success });
-            // Optional: Reset form or close modal logic via parent?
-            // For now just show success.
+            // Reset the form
+            formRef.current?.reset();
         }
 
         setIsLoading(false);
@@ -70,7 +69,7 @@ export function NorthStarDirective() {
                 <p className="font-mono text-xs text-zinc-500 uppercase tracking-widest">// DEFINE_PROTOCOL_GOAL</p>
             </div>
 
-            <form action={handleGoalCreation} className="space-y-4 flex-1 flex flex-col">
+            <form ref={formRef} action={handleGoalCreation} className="space-y-4 flex-1 flex flex-col">
                 {/* 1. Title & Description */}
                 <div className="space-y-2">
                     <label className="font-mono text-xs font-bold uppercase text-zinc-600 block">
