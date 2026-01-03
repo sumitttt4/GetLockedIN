@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { type EmailOtpType } from '@supabase/supabase-js';
 
 export async function GET(request: Request) {
     const { searchParams, origin } = new URL(request.url);
     const code = searchParams.get("code");
+    const token_hash = searchParams.get("token_hash");
+    const type = searchParams.get("type") as EmailOtpType | null;
+
     // Always redirect to checkout after login - it will handle redirecting to dashboard if already paid
     const next = "/checkout";
 
@@ -12,7 +16,16 @@ export async function GET(request: Request) {
         const { error } = await supabase.auth.exchangeCodeForSession(code);
 
         if (!error) {
-            // Force redirect to checkout with proper cookie handling
+            const redirectUrl = new URL(next, origin);
+            return NextResponse.redirect(redirectUrl);
+        }
+    } else if (token_hash && type) {
+        const supabase = await createClient();
+        const { error } = await supabase.auth.verifyOtp({
+            type,
+            token_hash,
+        });
+        if (!error) {
             const redirectUrl = new URL(next, origin);
             return NextResponse.redirect(redirectUrl);
         }

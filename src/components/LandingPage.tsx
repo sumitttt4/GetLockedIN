@@ -326,8 +326,10 @@ export default function LandingPage() {
                                 <span className="text-xs font-mono font-medium text-zinc-600">All Systems Operational</span>
                             </div>
 
-                            <p className="text-sm text-zinc-500 font-mono">
-                                © 2025 GetLockedIn Protocol. Built in Public.
+                            <p className="text-sm text-zinc-500 font-mono flex gap-4">
+                                <span>© 2025 GetLockedIn Protocol</span>
+                                <Link href="/privacy" className="hover:text-black hover:underline">Privacy</Link>
+                                <Link href="/terms" className="hover:text-black hover:underline">Terms</Link>
                             </p>
                         </div>
                     </footer>

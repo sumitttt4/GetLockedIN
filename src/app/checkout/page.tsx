@@ -13,7 +13,7 @@ export default async function CheckoutPage() {
     }
 
     // 2. Check Payment Status
-    const isAdmin = user.email === 'sumitsharma9128@gmail.com';
+    const isAdmin = user.email?.toLowerCase() === 'sumitsharma9128@gmail.com';
 
     if (isAdmin) {
         redirect("/dashboard");

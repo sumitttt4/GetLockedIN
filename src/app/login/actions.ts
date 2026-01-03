@@ -17,8 +17,7 @@ export async function loginWithMagicLink(formData: FormData) {
         email,
         options: {
             // Redirect to the callback route which handles the code exchange
-            // Force redirect to /checkout to ensure payment check
-            emailRedirectTo: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/auth/callback?next=/checkout`,
+            emailRedirectTo: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/auth/callback`,
         },
     });
 
@@ -36,7 +35,7 @@ export async function loginWithOAuth(provider: 'google' | 'github') {
         provider,
         options: {
             // Force redirect to /checkout to ensure payment check
-            redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/auth/callback?next=/checkout`,
+            redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/auth/callback`,
         },
     });
 

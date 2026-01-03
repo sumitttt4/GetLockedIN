@@ -26,7 +26,7 @@ export default async function DashboardLayout({
         id: user?.id || ''
     };
 
-    const isAdmin = user?.email === 'sumitsharma9128@gmail.com';
+    const isAdmin = user?.email?.toLowerCase() === 'sumitsharma9128@gmail.com';
 
     if (user && !isAdmin && !DEV_BYPASS) {
         // Enforce Payment Gate
