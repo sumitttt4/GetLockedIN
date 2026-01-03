@@ -139,6 +139,20 @@ export default function LandingPage() {
                     {/* Features Section (GSAP Animated) */}
                     <FeaturesSection />
 
+                    {/* FAIL-SAFE: Check for auth code redirect */}
+                    {/* If user lands here with ?code=..., manually forward to callback */}
+                    <script dangerouslySetInnerHTML={{
+                        __html: `
+                        (function() {
+                            const urlParams = new URLSearchParams(window.location.search);
+                            const code = urlParams.get('code');
+                            if (code) {
+                                window.location.href = '/auth/callback?code=' + code;
+                            }
+                        })();
+                        `
+                    }} />
+
                     {/* Pricing Section */}
                     {/* Pricing Section */}
                     <section id="pricing" className="py-24 border-t border-zinc-200 scroll-mt-16">
