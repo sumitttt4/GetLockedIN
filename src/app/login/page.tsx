@@ -54,7 +54,7 @@ export default function LoginPage() {
 
                 {/* Login Card */}
                 <div className="bg-white border-2 border-black p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-                    {/* Social Login Buttons */}
+                    {/* Social Login Buttons - COMMENTED FOR LAUNCH
                     <div className="grid grid-cols-2 gap-4 mb-6">
                         <button
                             onClick={() => loginWithOAuth('github')}
@@ -84,6 +84,7 @@ export default function LoginPage() {
                             <span className="bg-white px-2 text-zinc-500 font-mono">Or continue with Magic Link</span>
                         </div>
                     </div>
+                    */}
 
                     <form action={handleMagicLink} className="space-y-6">
 
