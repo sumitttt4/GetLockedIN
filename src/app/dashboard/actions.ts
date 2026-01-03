@@ -117,10 +117,25 @@ export async function commitLog(formData: FormData) {
         return { error: "Log content empty" };
     }
 
+    // Use pure date YYYY-MM-DD for uniqueness constraint
+    const today = new Date().toISOString().split('T')[0];
+
+    // Check if already logged today
+    const { data: existing } = await supabase
+        .from("ledger")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("log_date", today)
+        .single();
+
+    if (existing) {
+        return { error: "Already logged today. Editing support coming soon." };
+    }
+
     const { error } = await supabase.from("ledger").insert({
         user_id: user.id,
         content,
-        log_date: new Date().toISOString(),
+        log_date: today,
         status: "shipped",
     });
 
@@ -130,6 +145,60 @@ export async function commitLog(formData: FormData) {
 
     revalidatePath("/dashboard");
     return { success: "Log Committed" };
+}
+
+export async function getConsistencyLogs() {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { logs: [], streak: 0 };
+
+    // Get last 30 days of logs
+    const { data, error } = await supabase
+        .from("ledger")
+        .select("log_date, status")
+        .eq("user_id", user.id)
+        .order("log_date", { ascending: false })
+        .limit(100);
+
+    if (error || !data) return { logs: [], streak: 0 };
+
+    const logs = data.map(l => ({
+        date: l.log_date,
+        status: l.status,
+        count: 1
+    }));
+
+    // Calculate Streak
+    let streak = 0;
+    const today = new Date().toISOString().split('T')[0];
+    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+
+    // Check if logged today or yesterday to maintain active streak
+    const hasLogToday = logs.some(l => l.date === today);
+    const hasLogYesterday = logs.some(l => l.date === yesterday);
+
+    if (hasLogToday || hasLogYesterday) {
+        // Count backwards
+        let currentCheck = new Date();
+        // If today is missing but yesterday exists, start counting from yesterday
+        if (!hasLogToday && hasLogYesterday) {
+            currentCheck.setDate(currentCheck.getDate() - 1);
+        }
+
+        while (true) {
+            const dateStr = currentCheck.toISOString().split('T')[0];
+            const logExists = logs.some(l => l.date === dateStr);
+
+            if (logExists) {
+                streak++;
+                currentCheck.setDate(currentCheck.getDate() - 1);
+            } else {
+                break;
+            }
+        }
+    }
+
+    return { logs, streak };
 }
 
 // --- STRIPE ACTIONS ---

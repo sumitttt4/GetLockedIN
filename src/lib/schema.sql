@@ -114,3 +114,33 @@ create policy "Users can unlike." on public.goal_likes for delete using (auth.ui
 -- INTEGRATIONS
 create policy "Users can view own integrations." on public.integrations for select using (auth.uid() = user_id);
 create policy "Users can manage own integrations." on public.integrations for all using (auth.uid() = user_id);
+
+-- 5. LEDGER (The Consistency Engine)
+create table public.ledger (
+  id uuid default uuid_generate_v4() primary key,
+  user_id uuid references public.profiles(id) not null,
+  
+  -- Log Details
+  content text, -- "Synced database", "Ran 5k", etc.
+  proof_url text, -- Optional screenshot/link
+  
+  -- Metadata
+  log_date date default CURRENT_DATE, -- The date this counts for (to handle timezone late night commits)
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  
+  status text default 'shipped' check (status in ('shipped', 'missed', 'frozen')),
+  
+  -- Constraint: One log per day per user (for the heatmap logic simplicity)
+  -- Or allow multiple, but usually we just care "did they log something?"
+  unique(user_id, log_date)
+);
+
+-- RLS for Ledger
+alter table public.ledger enable row level security;
+create policy "Public ledger is viewable." on public.ledger for select using (true);
+create policy "Users can insert ledger logs." on public.ledger for insert with check (auth.uid() = user_id);
+create policy "Users can update own ledger." on public.ledger for update using (auth.uid() = user_id);
+
+-- 6. ADD STREAK TO PROFILES (Run this via SQL Editor if table exists)
+-- alter table public.profiles add column streak_count integer default 0;
+-- alter table public.profiles add column last_check_in date;

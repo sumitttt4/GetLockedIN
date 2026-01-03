@@ -23,7 +23,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { NorthStarDirective } from "@/components/dashboard/RealFeatures";
-import { connectStripe, getStripeData, getGoals, getProfile } from "@/app/dashboard/actions";
+import { connectStripe, getStripeData, getGoals, getProfile, getConsistencyLogs } from "@/app/dashboard/actions";
+import { ConsistencyGrid } from "@/components/dashboard/ConsistencyGrid";
 
 export default function DashboardPage() {
   const [activeFilter, setActiveFilter] = useState("All Goals");
@@ -33,6 +34,10 @@ export default function DashboardPage() {
   const [profile, setProfile] = useState<any>(null);
   const [goals, setGoals] = useState<any[]>([]);
   const [isLoadingGoals, setIsLoadingGoals] = useState(true);
+
+  // LOGS STATE
+  const [logs, setLogs] = useState<any[]>([]);
+  const [streak, setStreak] = useState(0);
 
   // STRIPE STATE
   const [showStripeModal, setShowStripeModal] = useState(false);
@@ -45,6 +50,12 @@ export default function DashboardPage() {
     // 0. Fetch Profile
     getProfile().then(data => {
       if (data) setProfile(data);
+    });
+
+    // 0.5 Fetch Consistency Logs
+    getConsistencyLogs().then(data => {
+      setLogs(data.logs);
+      setStreak(data.streak);
     });
 
     // 1. Fetch Stripe
@@ -227,6 +238,9 @@ export default function DashboardPage() {
         </div>
 
       </div>
+
+      {/* --- CONSISTENCY ENGINE --- */}
+      <ConsistencyGrid logs={logs} streak={streak} />
 
       {/* --- BOTTOM SECTION: GOALS MANAGER --- */}
       <div className="bg-white border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
