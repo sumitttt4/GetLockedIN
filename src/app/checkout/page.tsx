@@ -89,7 +89,10 @@ export default async function CheckoutPage() {
 
                     <div className="text-[10px] text-zinc-400 text-center leading-relaxed">
                         By proceeding, you agree to the Terms of Service. <br />
-                        Payment is non-refundable.
+                        Payment is non-refundable. <br />
+                        <a href="mailto:support@getlockedin.live?subject=Payment Issue" className="underline hover:text-black mt-2 inline-block">
+                            Already paid? Contact Support
+                        </a>
                     </div>
                 </div>
             </div>
