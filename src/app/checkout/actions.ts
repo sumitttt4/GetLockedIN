@@ -14,63 +14,23 @@ export async function createDoDoCheckout() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return { error: "Not authenticated" };
 
-    // Get user profile for email
-    const { data: profile } = await supabase
-        .from('profiles')
-        .select('username, display_name')
-        .eq('id', user.id)
-        .single();
+    // Use the specific Product Link provided
+    const PRODUCT_LINK = "https://checkout.dodopayments.com/buy/pdt_0NUvc8v3ozWTrnPigc0ka";
 
-    try {
-        // Create DoDo Checkout Session
-        const response = await fetch('https://api.dodo.co/v1/checkout/sessions', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${process.env.DODO_SECRET_KEY}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                // Product Configuration
-                amount: 900, // $9.00 in cents
-                currency: 'USD',
-                product_name: 'GetLockedIN - Lifetime Access',
-                product_description: 'Day One Operator Access - Lifetime membership to GetLockedIN Protocol',
+    // Construct return URL (success page)
+    const returnUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'https://getlockedin.live'}/checkout/success`;
 
-                // Customer Info
-                customer_email: user.email,
-                customer_name: profile?.display_name || profile?.username || user.email,
+    // Construct final URL with pre-filled email and redirect
+    // Note: DoDo supports 'email' param to pre-fill customer email
+    const checkoutUrl = `${PRODUCT_LINK}?quantity=1&redirect_url=${encodeURIComponent(returnUrl)}&email=${encodeURIComponent(user.email)}`;
 
-                // Metadata for webhook processing
-                metadata: {
-                    user_id: user.id,
-                    product_type: 'lifetime_access',
-                    environment: process.env.NODE_ENV || 'development'
-                },
-
-                // Redirect URLs
-                success_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-                cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/checkout`,
-            }),
-        });
-
-        if (!response.ok) {
-            const error = await response.json();
-            return { error: error.message || 'Failed to create checkout session' };
-        }
-
-        const session = await response.json();
-
-        // Return the checkout URL for redirect
-        return {
-            success: true,
-            checkoutUrl: session.url,
-            sessionId: session.id
-        };
-
-    } catch (error: any) {
-        console.error('DoDo Checkout Error:', error);
-        return { error: error.message || 'Payment system error' };
-    }
+    return {
+        success: true,
+        checkoutUrl: checkoutUrl,
+        // We return a placeholder session ID since we are using a static link
+        // The success page will need to handle the params DoDo sends back
+        sessionId: 'link-flow'
+    };
 }
 
 /**
