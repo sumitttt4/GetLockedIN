@@ -283,10 +283,20 @@ export default function DashboardPage() {
               <Loader2 className="w-8 h-8 animate-spin text-zinc-300" />
             </div>
           ) : filteredGoals.length === 0 ? (
-            <div className="text-center py-20 bg-zinc-50 border-2 border-dashed border-zinc-300">
-              <p className="font-bold text-zinc-400 uppercase tracking-widest">No Goals Found</p>
-              <button onClick={() => setShowCreateModal(true)} className="text-[#00FF00] font-bold text-sm mt-2 hover:underline underline-offset-4 decoration-2 bg-black px-2">
-                Create your first goal
+            <div className="flex flex-col items-center justify-center py-20 bg-zinc-50 border-2 border-dashed border-zinc-300">
+              <div className="bg-black text-white p-4 mb-4 font-mono text-xs max-w-sm w-full shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]">
+                <p className="text-green-400">$ system_check_</p>
+                <p className="text-zinc-500">Scanning for protocols...</p>
+                <p className="text-red-500">No active directives found.</p>
+                <p className="text-zinc-500 mt-2">To begin, you must declare your intent.</p>
+                <div className="h-1 w-3 bg-green-500 animate-pulse mt-1 inline-block" />
+              </div>
+              <p className="font-bold text-zinc-400 uppercase tracking-widest mb-4">Awaiting First Command</p>
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className="bg-black text-white px-8 py-3 font-black uppercase tracking-widest hover:bg-[#00FF00] hover:text-black transition-all shadow-lg hover:shadow-black/20"
+              >
+                Initialize Protocol
               </button>
             </div>
           ) : (
